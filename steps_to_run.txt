@@ -1,0 +1,20 @@
+1. Clone Github repo (MAVSDK)
+git clone -b v2.12.12 https://github.com/mavlink/MAVSDK --recursive
+
+2. Clone Github repo (MAVSDK libraries) 
+
+3. In folder to run, e.g., battery, build
+cmake -Bbuild -H.
+cmake --build build
+
+5. Open QGroundControl
+
+6. Open 
+
+4. Different type of connection can be run as follows, e.g., battery (need to be in build folder)
+Serial using V5 radio telemetry: ./battery serial:///dev/ttyUSB2:115200
+Serial using USB C (SIYI N7) to USB A: ./battery serial:///dev/ttyACM0:115200
+
+
+
+
