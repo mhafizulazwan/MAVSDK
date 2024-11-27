@@ -5,14 +5,19 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(trigger_micasense)
 
+find_package(CURL REQUIRED)
+
 add_executable(trigger_micasense
     trigger_micasense.cpp
+    micasense.cpp
+    cloud.cpp
 )
 
 find_package(MAVSDK REQUIRED)
 
 target_link_libraries(trigger_micasense
     MAVSDK::mavsdk
+    CURL::libcurl
 )
 
 if(NOT MSVC)
