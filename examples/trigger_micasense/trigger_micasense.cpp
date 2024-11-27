@@ -207,6 +207,7 @@ int main(int argc, char** argv)
         mission.pause_mission();
         micasense.captureImages();
         cloud.uploadImagesToDropbox();
+        cloud.moveImagesToArchive();
         mission.start_mission();
     }
 

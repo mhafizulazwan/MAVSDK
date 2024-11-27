@@ -15,6 +15,7 @@
 class Cloud {
 public:
     void uploadImagesToDropbox();
+    void moveImagesToArchive();
 
 };
 
