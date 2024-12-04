@@ -16,7 +16,6 @@ Serial using V5 radio telemetry: ./battery serial:///dev/ttyUSB2:115200
 Serial using USB C (SIYI N7) to USB A: ./battery serial:///dev/ttyACM0:115200
 
 
-
 Other:
 1. Setting up Raspberry Pi as AP: https://www.tomshardware.com/how-to/raspberry-pi-access-point
 2. Settle ssh issue to Raspberry Pi: see chatgpt part "SSH Key Conflict Solution"
