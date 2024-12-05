@@ -91,7 +91,7 @@ int main(int argc, char** argv)
     auto action = Action{system.value()};
     auto mission = Mission{system.value()};
     auto telemetry = Telemetry{system.value()};
-
+    
     // while (!telemetry.health_all_ok()) {
     //     std::cout << "Waiting for system to be ready\n";
     //     std::cout << telemetry.health() << std::endl;
