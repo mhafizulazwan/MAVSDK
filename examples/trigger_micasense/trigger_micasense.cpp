@@ -103,11 +103,6 @@ int main(int argc, char** argv)
     std::cout << "Downloading mission from flight controller." << '\n';
     std::pair<Mission::Result, Mission::MissionPlan> result = mission.download_mission();
 
-    if (result.first != Mission::Result::Success) {
-        std::cout << "Mission download failed (" << result.first << "), exiting." << '\n';
-        return 1;
-    }
-
     std::cout << "Mission downloaded (MissionItems: "
         << result.second.mission_items.size()
         << ")" << '\n';
@@ -148,6 +143,11 @@ int main(int argc, char** argv)
                   << "  Yaw: " << item.yaw_deg << "\n";
     }
 
+    if (result.first != Mission::Result::Success) {
+        std::cout << "Mission download failed (" << result.first << "), exiting." << '\n';
+        return 1;
+    }
+    
     std::cout << "Uploading mission...\n";
     Mission::MissionPlan mission_plan{};
     mission_plan.mission_items = mission_items;
