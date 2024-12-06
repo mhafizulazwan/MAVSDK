@@ -42,7 +42,7 @@ int main(int argc, char** argv)
         std::cout << "Enter the waypoint number for data capture " << (i + 1) << ": ";
         std::cin >> capture_waypoints[i];
     }
-    
+
     if (argc != 3) {
         usage(argv[0]);
         return 1;
@@ -66,10 +66,10 @@ int main(int argc, char** argv)
     auto mission_raw = MissionRaw{system.value()};
     auto telemetry = Telemetry{system.value()};
 
-    while (!telemetry.health_all_ok()) {
-        std::cout << "Waiting for system to be ready\n";
-        sleep_for(seconds(1));
-    }
+    // while (!telemetry.health_all_ok()) {
+    //     std::cout << "Waiting for system to be ready\n";
+    //     sleep_for(seconds(1));
+    // }
 
     std::cout << "System ready\n";
 
