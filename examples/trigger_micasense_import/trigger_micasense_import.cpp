@@ -109,7 +109,7 @@ int main(int argc, char** argv)
 
     auto prom = std::promise<void>{};
     auto fut = prom.get_future();
-    
+
     // Create a vector of atomic booleans
     std::vector<std::atomic<bool>> capture_images(num_waypoints);
     for (auto& capture_image : capture_images) {
@@ -117,7 +117,7 @@ int main(int argc, char** argv)
     }
 
     // Before starting the mission subscribe to the mission progress.
-    mission_raw.subscribe_mission_progress([&capture_images, capture_waypoints](MissionRaw::MissionProgress mission_progress) {
+    mission_raw.subscribe_mission_progress([&prom, &capture_images, capture_waypoints](MissionRaw::MissionProgress mission_progress) {
         std::cout << "Mission progress update: " << mission_progress.current << " / "
                   << mission_progress.total << '\n';
 
@@ -125,6 +125,10 @@ int main(int argc, char** argv)
             if (mission_progress.current == capture_waypoints[i]) {
                 capture_images[i] = true;
             }
+        }
+
+        if (mission_progress.current == mission_progress.total) {
+            prom.set_value();
         }
     });
 
