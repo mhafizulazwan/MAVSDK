@@ -14,6 +14,8 @@
 #include <iostream>
 #include <memory>
 #include <thread>
+#include "micasense.hpp"
+#include "cloud.hpp"
 
 using namespace mavsdk;
 using std::chrono::seconds;
@@ -127,6 +129,24 @@ int main(int argc, char** argv)
     if (start_mission_result != MissionRaw::Result::Success) {
         std::cerr << "Starting mission failed: " << start_mission_result << '\n';
         return 1;
+    }
+
+    Micasense micasense;
+    Cloud cloud;
+
+    for (size_t i = 0; i < capture_images.size(); ++i) {
+        while (!capture_images[i]) {
+            sleep_for(seconds(1));
+        }
+        mission_raw.pause_mission();
+        micasense.captureImages();
+        cloud.uploadImagesToDropbox();
+        cloud.moveImagesToArchive();
+        mission_raw.start_mission();
+    }
+
+    while (!mission_raw.is_mission_finished().second) {
+        sleep_for(seconds(1));
     }
 
     // Mission complete. Command RTL to go home.
