@@ -1,5 +1,6 @@
 //
 // Description: This demonstrates how to trigger a camera with a MicaSense RedEdge-MX
+//              and import a mission from a QGroundControl plan.
 //
 
 #include <mavsdk/mavsdk.h>
@@ -30,6 +31,18 @@ void usage(const std::string& bin_name)
 
 int main(int argc, char** argv)
 {
+    // Prompt the user for the number of waypoints
+    int num_waypoints;
+    std::cout << "Enter the total number of waypoints for data capture: ";
+    std::cin >> num_waypoints;
+
+    // Store the waypoint numbers
+    std::vector<int> capture_waypoints(num_waypoints);
+    for (int i = 0; i < num_waypoints; ++i) {
+        std::cout << "Enter the waypoint number for data capture " << (i + 1) << ": ";
+        std::cin >> capture_waypoints[i];
+    }
+    
     if (argc != 3) {
         usage(argv[0]);
         return 1;
@@ -92,26 +105,27 @@ int main(int argc, char** argv)
     }
     std::cout << "Armed.\n";
 
-    auto prom = std::promise<void>{};
-    auto fut = prom.get_future();
+    // Create a vector of atomic booleans
+    std::vector<std::atomic<bool>> capture_images(num_waypoints);
+    for (auto& capture_image : capture_images) {
+        capture_image = false;
+    }
 
     // Before starting the mission subscribe to the mission progress.
-    mission_raw.subscribe_mission_progress([&prom](MissionRaw::MissionProgress mission_progress) {
+    mission_raw.subscribe_mission_progress([&capture_images, capture_waypoints](MissionRaw::MissionProgress mission_progress) {
         std::cout << "Mission progress update: " << mission_progress.current << " / "
                   << mission_progress.total << '\n';
-        if (mission_progress.current == mission_progress.total) {
-            prom.set_value();
+
+        for (size_t i = 0; i < capture_waypoints.size(); ++i) {
+            if (mission_progress.current == capture_waypoints[i]) {
+                capture_images[i] = true;
+            }
         }
     });
 
     const MissionRaw::Result start_mission_result = mission_raw.start_mission();
     if (start_mission_result != MissionRaw::Result::Success) {
         std::cerr << "Starting mission failed: " << start_mission_result << '\n';
-        return 1;
-    }
-
-    if (fut.wait_for(std::chrono::seconds(240)) != std::future_status::ready) {
-        std::cerr << "Mission not finished yet, giving up.\n";
         return 1;
     }
 

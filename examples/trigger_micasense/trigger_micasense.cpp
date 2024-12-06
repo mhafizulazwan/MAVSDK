@@ -59,7 +59,7 @@ int main(int argc, char** argv)
 {
     // Prompt the user for the number of waypoints
     int num_waypoints;
-    std::cout << "Enter the number of waypoints for image capture: ";
+    std::cout << "Enter the total number of waypoints for data capture: ";
     std::cin >> num_waypoints;
 
     // Store the waypoint numbers
