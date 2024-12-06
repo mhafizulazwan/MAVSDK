@@ -107,6 +107,9 @@ int main(int argc, char** argv)
     }
     std::cout << "Armed.\n";
 
+    auto prom = std::promise<void>{};
+    auto fut = prom.get_future();
+    
     // Create a vector of atomic booleans
     std::vector<std::atomic<bool>> capture_images(num_waypoints);
     for (auto& capture_image : capture_images) {
@@ -145,8 +148,9 @@ int main(int argc, char** argv)
         mission_raw.start_mission();
     }
 
-    while (!mission_raw.is_mission_finished().second) {
-        sleep_for(seconds(1));
+    if (fut.wait_for(std::chrono::seconds(240)) != std::future_status::ready) {
+        std::cerr << "Mission not finished yet, giving up.\n";
+        return 1;
     }
 
     // Mission complete. Command RTL to go home.
